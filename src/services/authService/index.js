@@ -10,13 +10,16 @@ const UserNotFoundError = require("../../exceptions/domain/users/UserNotFoundErr
 const jwt = require('jsonwebtoken');
 
 const userRepository = require("../../repositories/userRepoistory");
+const profileRepository = require("../../repositories/profileRepository");
+const ProfileNotFoundError = require("../../exceptions/domain/profile/ProfileNotFoundError");
+
 
 async function createUser({ name, email, password }) {
-  if (!name || name.length < 2) {
+  if (!name || name.trim().length < 2) {
     throw new InvalidNameError();
   }
 
-  if (!/\S+@\S+\.\S+/.test(email)) {
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
     throw new InvalidEmailError();
   }
 
@@ -24,24 +27,34 @@ async function createUser({ name, email, password }) {
     throw new InvalidPasswordError();
   }
 
-  const existingUser = await userRepository.findByEmail(email);
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const existingUser = await userRepository.findByEmail(normalizedEmail);
 
   if (existingUser) {
     throw new EmailAlreadyExistsError();
   }
 
+  const profile = await profileRepository.findByName("Licitante");
+
+  if (!profile) {
+    throw new ProfileNotFoundError();
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = await userRepository.create({
-    name,
-    email,
+    name: name.trim(),
+    email: normalizedEmail,
     password: hashedPassword,
+    profileId: profile.id,
   });
 
   const token = jwt.sign(
     {
       id: user.id,
       email: user.email,
+      role: profile.name,
     },
     process.env.JWT_SECRET,
     {
@@ -56,6 +69,7 @@ async function createUser({ name, email, password }) {
       id: user.id,
       name: user.name,
       email: user.email,
+      profile: profile.name,
     },
   };
 }
