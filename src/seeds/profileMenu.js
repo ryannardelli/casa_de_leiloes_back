@@ -4,19 +4,19 @@ const ProfileMenu = require("../models/ProfileMenu");
 
 async function seedProfileMenus() {
   const leiloeiro = await Profile.findOne({
-    where: { name: "LEILOEIRO" },
+    where: { name: "Leiloeiro" },
   });
 
   const licitante = await Profile.findOne({
-    where: { name: "LICITANTE" },
+    where: { name: "Licitante" },
   });
 
   if (!leiloeiro) {
-    throw new Error('Profile "LEILOEIRO" não encontrado.');
+    throw new Error('Profile "Leiloeiro" não encontrado.');
   }
 
   if (!licitante) {
-    throw new Error('Profile "LICITANTE" não encontrado.');
+    throw new Error('Profile "Licitante" não encontrado.');
   }
 
   // Menus exclusivos do Leiloeiro

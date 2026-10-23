@@ -4,12 +4,12 @@ const InvalidPasswordError = require("../../exceptions/domain/auth/InvalidPasswo
 const InvalidNameError = require("../../exceptions/domain/auth/InvalidNameError");
 const InvalidCredentialsError = require("../../exceptions/domain/auth/InvalidCredentialsError");
 
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const UserNotFoundError = require("../../exceptions/domain/users/UserNotFoundError");
 
 const jwt = require('jsonwebtoken');
 
-const userRepository = require("../../repositories/userRepository");
+const userRepository = require("../../repositories/userRepoistory");
 
 async function createUser({ name, email, password }) {
   if (!name || name.length < 2) {
