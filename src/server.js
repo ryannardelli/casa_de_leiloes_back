@@ -13,6 +13,7 @@ const sequelize = require("./configs/database");
 const seedProfiles = require("./seeds/profile.seed");
 const seedMenus = require("./seeds/seedMenus");
 const seedProfileMenu = require("./seeds/profileMenu");
+const createInitialAdmin = require("./seeds/admin.seed");
 
 const PORT = process.env.PORT || 3000;
 
@@ -79,6 +80,8 @@ async function connectDatabase() {
     await seedProfileMenu();
 
     console.log("Seeds executados com sucesso!");
+
+    await createInitialAdmin();
 
     const server = http.createServer(app);
 
