@@ -58,68 +58,10 @@ async function getFeaturedWorks() {
     }
 }
 
-// async function getFeaturedWorks() {
-//     try {
-//         const response = await fetch(
-//             `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=Japanese&hasImages=true&limit=30`,
-//             { signal: AbortSignal.timeout(10000) }
-//         );
-
-//         if (!response.ok) throw new MuseumApiError();
-
-//         const data = await response.json();
-
-//         if (!data.objectIDs) return [];
-
-//         const works = [];
-
-//         for (let i = 0; i < data.objectIDs.length && works.length < 8; i += 5) {
-//             const batch = data.objectIDs.slice(i, i + 5);
-
-//             const results = await Promise.all(
-//                 batch.map(async (id) => {
-//                     try {
-//                         const response = await fetch(
-//                             `${process.env.EXTERNAL_API_BASE_URL}/objects/${id}`,
-//                             { signal: AbortSignal.timeout(10000) }
-//                         );
-
-//                         if (!response.ok) return null;
-
-//                         const work = await response.json();
-
-//                         if (!work.primaryImageSmall && !work.primaryImage) return null;
-
-//                         return {
-//                             id: work.objectID,
-//                             title: work.title,
-//                             artist: work.artistDisplayName,
-//                             category: work.classification,
-//                             image: work.primaryImageSmall || work.primaryImage,
-//                             date: work.objectDate,
-//                             department: work.department
-//                         };
-//                     } catch {
-//                         return null;
-//                     }
-//                 })
-//             );
-
-//             works.push(...results.filter((work) => work !== null));
-//         }
-
-//         return works.slice(0, 8);
-//     } catch (err) {
-//         if (err instanceof MuseumApiError) throw err;
-
-//         throw new MuseumApiError();
-//     }
-// }
-
 async function getCuratedWorks() {
     try {
         const response = await fetch(
-            `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=Japanese&hasImages=true&limit=20`
+            `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=painting&hasImages=true&limit=30`
         );
 
         if (!response.ok) throw new MuseumApiError();
