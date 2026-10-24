@@ -1,6 +1,9 @@
 const UserNotFoundError = require("../../exceptions/domain/users/UserNotFoundError");
 
+const ProfileNotFoundError = require("../../exceptions/domain/profile/ProfileNotFoundError");
+
 const userRepository = require('../../repositories/userRepoistory');
+const profileRepository = require('../../repositories/profileRepository');
 
 async function getAllUsers() {
     return userRepository.findAll();
@@ -32,4 +35,27 @@ async function deleteUser(id) {
     return { message: "Usuário excluído com sucesso!" };
 }
 
-module.exports = { getAllUsers, getUserById, updateUser, deleteUser };
+async function updateUserProfile(userId, profileId) {
+    const user = await userRepository.findById(userId);
+    if(!user) throw new UserNotFoundError();
+
+    const profile = await profileRepository.findById(profileId);
+    if(!profile) throw new ProfileNotFoundError();
+
+    user.profileId = profile.id;
+
+    switch(profile.name) {
+        case 'Administrador':
+            user.role = 'admin';
+            break;
+        default:
+            user.role = 'user';
+    }
+
+    await userRepository.save(user);
+
+    return user;
+
+}
+
+module.exports = { getAllUsers, getUserById, updateUser, deleteUser, updateUserProfile };

@@ -166,4 +166,78 @@ router.patch("/:id", checkToken, authorize(["admin"]), userController.update);
  */
 router.delete("/:id", checkToken, authorize(["admin"]), userController.remove);
 
+/**
+ * @swagger
+ * /users/associateProfile/{userId}:
+ *   patch:
+ *     summary: Associa um perfil a um usuário
+ *     description: Associa um perfil (profileId) a um usuário existente.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID do usuário
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - profileId
+ *             properties:
+ *               profileId:
+ *                 type: integer
+ *                 description: ID do perfil a ser associado ao usuário
+ *                 example: 2
+ *     responses:
+ *       200:
+ *         description: Perfil associado ao usuário com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Perfil associado ao usuário com sucesso!
+ *       400:
+ *         description: Dados inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "profileId é obrigatório."
+ *       404:
+ *         description: Usuário ou perfil não encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuário ou perfil não encontrado."
+ *       403:
+ *         description: Acesso negado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Acesso não autorizado."
+ */
+router.patch("/associateProfile/:id", checkToken, authorize(["admin"]), userController.updateRole);
+
 module.exports = router;

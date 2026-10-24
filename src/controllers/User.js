@@ -60,4 +60,17 @@ async function remove(req, res, next) {
     }
 }
 
-module.exports = { findAll, findById, update, me, remove };
+async function updateRole(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { profileId } = req.body;
+
+    await userService.updateUserProfile(id, profileId);
+
+    return res.status(200).json({ message: "Permissão atualizada com sucesso!" });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { findAll, findById, update, me, remove, updateRole };
