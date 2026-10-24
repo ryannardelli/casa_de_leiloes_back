@@ -61,7 +61,7 @@ async function getFeaturedWorks() {
 async function getCuratedWorks() {
     let curatedWorksCache = null;
     let curatedWorksCacheExpiresAt = 0;
-    
+
     if (curatedWorksCache && Date.now() < curatedWorksCacheExpiresAt) {
         return curatedWorksCache;
     }
@@ -121,56 +121,6 @@ async function getCuratedWorks() {
         throw new MuseumApiError();
     }
 }
-
-// async function getCuratedWorks() {
-//     try {
-//         const response = await fetch(
-//             `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=painting&hasImages=true&limit=30`
-//         );
-
-//         if (!response.ok) throw new MuseumApiError();
-
-//         const data = await response.json();
-
-//         if (!data.objectIDs) return [];
-
-//         const works = await Promise.all(
-//             data.objectIDs.map(async (id) => {
-//                 try {
-//                     const response = await fetch(
-//                         `${process.env.EXTERNAL_API_BASE_URL}/objects/${id}`
-//                     );
-
-//                     if (!response.ok) return null;
-
-//                     const work = await response.json();
-
-//                     const image = work.primaryImageSmall || work.primaryImage;
-
-//                     if (!image) return null;
-
-//                     return {
-//                         id: work.objectID,
-//                         title: work.title,
-//                         artist: work.artistDisplayName,
-//                         category: work.classification,
-//                         image,
-//                         date: work.objectDate,
-//                         department: work.department
-//                     };
-//                 } catch {
-//                     return null;
-//                 }
-//             })
-//         );
-
-//         return works.filter((work) => work).slice(0, 8);
-//     } catch (err) {
-//         if (err instanceof MuseumApiError) throw err;
-
-//         throw new MuseumApiError();
-//     }
-// }
 
 async function getCategories() {
     try {
