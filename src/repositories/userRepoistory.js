@@ -1,9 +1,14 @@
 const User = require("../models/User");
+const Profile = require("../models/Profile");
 
 module.exports = {
-  findAll: () => User.findAll(),
+  findAll: () => User.findAll({
+    include: [{ model: Profile, as: 'Profile' }]
+  }),
 
-  findById: (id) => User.findByPk(id),
+  findById: (id) => User.findByPk(id, {
+    include: [{ model: Profile, as: 'Profile' }]
+  }),
 
   findByEmail: (email) =>
     User.findOne({
