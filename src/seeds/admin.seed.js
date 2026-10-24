@@ -23,6 +23,7 @@ async function createInitialAdmin() {
       name: "Administrador",
       email: process.env.INITIAL_ADMIN_EMAIL,
       password: passwordHash,
+      role: "admin",
     });
 
     console.log("Usuário inicial criado com sucesso.");
