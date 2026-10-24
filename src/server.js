@@ -33,6 +33,12 @@ async function connectDatabase() {
     const ProfileMenu = require("./models/ProfileMenu");
     const User = require("./models/User");
     const Profile = require("./models/Profile");
+    const AuditCheckpoint = require("./models/AuditCheckpoint");
+    const Bid = require("./models/Bid");
+    const Lot = require("./models/Lot");
+    const Receipt = require("./models/Receipt");
+    const Wallet = require("./models/Wallet");
+    const Transaction = require("./models/Transaction");
 
     User.belongsTo(Profile, {
       foreignKey: "profileId",
@@ -52,6 +58,76 @@ async function connectDatabase() {
     Menu.belongsToMany(Profile, {
       through: ProfileMenu,
       foreignKey: "menuId",
+    });
+
+    User.hasMany(Lot, {
+      foreignKey: "auctioneerId",
+      as: "lots",
+    });
+
+    Lot.belongsTo(User, {
+        foreignKey: "auctioneerId",
+        as: "auctioneer",
+    });
+
+    Lot.hasMany(Bid, {
+        foreignKey: "lotId",
+        as: "bids",
+    });
+
+    Bid.belongsTo(Lot, {
+        foreignKey: "lotId",
+        as: "lot",
+    });
+
+    User.hasMany(Bid, {
+        foreignKey: "bidderId",
+        as: "bids",
+    });
+
+    Bid.belongsTo(User, {
+        foreignKey: "bidderId",
+        as: "bidder",
+    });
+
+    User.hasOne(Wallet, {
+        foreignKey: "userId",
+        as: "wallet",
+    });
+
+    Wallet.belongsTo(User, {
+        foreignKey: "userId",
+        as: "user",
+    });
+
+    Wallet.hasMany(Transaction, {
+        foreignKey: "walletId",
+        as: "transactions",
+    });
+
+    Transaction.belongsTo(Wallet, {
+        foreignKey: "walletId",
+        as: "wallet",
+    });
+
+    Lot.hasOne(Receipt, {
+        foreignKey: "lotId",
+        as: "receipt",
+    });
+
+    Receipt.belongsTo(Lot, {
+        foreignKey: "lotId",
+        as: "lot",
+    });
+
+    Lot.hasMany(AuditCheckpoint, {
+        foreignKey: "lotId",
+        as: "auditCheckpoints",
+    });
+
+    AuditCheckpoint.belongsTo(Lot, {
+        foreignKey: "lotId",
+        as: "lot",
     });
 
     await sequelize.sync();
