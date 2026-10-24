@@ -1,9 +1,9 @@
 const MuseumApiError = require("../../exceptions/domain/publicCollection/MuseumApiError");
 
-let featuredWorksCache = null;
-let featuredWorksCacheExpiresAt = 0;
-
 async function getFeaturedWorks() {
+    let featuredWorksCache = null;
+    let featuredWorksCacheExpiresAt = 0;
+
     if (featuredWorksCache && Date.now() < featuredWorksCacheExpiresAt) {
         return featuredWorksCache;
     }
@@ -59,6 +59,13 @@ async function getFeaturedWorks() {
 }
 
 async function getCuratedWorks() {
+    let curatedWorksCache = null;
+    let curatedWorksCacheExpiresAt = 0;
+    
+    if (curatedWorksCache && Date.now() < curatedWorksCacheExpiresAt) {
+        return curatedWorksCache;
+    }
+
     try {
         const response = await fetch(
             `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=painting&hasImages=true&limit=30`
@@ -68,7 +75,11 @@ async function getCuratedWorks() {
 
         const data = await response.json();
 
-        if (!data.objectIDs) return [];
+        if (!data.objectIDs) {
+            curatedWorksCache = [];
+            curatedWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
+            return curatedWorksCache;
+        }
 
         const works = await Promise.all(
             data.objectIDs.map(async (id) => {
@@ -100,13 +111,66 @@ async function getCuratedWorks() {
             })
         );
 
-        return works.filter((work) => work).slice(0, 8);
+        curatedWorksCache = works.filter((work) => work).slice(0, 8);
+        curatedWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
+
+        return curatedWorksCache;
     } catch (err) {
         if (err instanceof MuseumApiError) throw err;
 
         throw new MuseumApiError();
     }
 }
+
+// async function getCuratedWorks() {
+//     try {
+//         const response = await fetch(
+//             `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=painting&hasImages=true&limit=30`
+//         );
+
+//         if (!response.ok) throw new MuseumApiError();
+
+//         const data = await response.json();
+
+//         if (!data.objectIDs) return [];
+
+//         const works = await Promise.all(
+//             data.objectIDs.map(async (id) => {
+//                 try {
+//                     const response = await fetch(
+//                         `${process.env.EXTERNAL_API_BASE_URL}/objects/${id}`
+//                     );
+
+//                     if (!response.ok) return null;
+
+//                     const work = await response.json();
+
+//                     const image = work.primaryImageSmall || work.primaryImage;
+
+//                     if (!image) return null;
+
+//                     return {
+//                         id: work.objectID,
+//                         title: work.title,
+//                         artist: work.artistDisplayName,
+//                         category: work.classification,
+//                         image,
+//                         date: work.objectDate,
+//                         department: work.department
+//                     };
+//                 } catch {
+//                     return null;
+//                 }
+//             })
+//         );
+
+//         return works.filter((work) => work).slice(0, 8);
+//     } catch (err) {
+//         if (err instanceof MuseumApiError) throw err;
+
+//         throw new MuseumApiError();
+//     }
+// }
 
 async function getCategories() {
     try {
