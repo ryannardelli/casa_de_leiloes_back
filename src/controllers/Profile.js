@@ -4,7 +4,7 @@ const { toMenuDto } = require('../dtos/menu/toMenuDto');
 
 const profileSerive = require('../services/profileService');
 
-async function findAll(req, res, next) {
+async function findAll(_req, res, next) {
     try {
          const profile = await profileSerive.getAllProfile();
          const profileDto = profile.map(toProfileDto);
