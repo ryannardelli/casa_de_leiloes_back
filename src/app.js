@@ -5,6 +5,8 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const lotRoutes = require("./routes/lotRoutes");
+const walletRoutes = require("./routes/walletRoutes");
+
 const publicCollectionRoutes = require("./routes/publicCollectionRoutes");
 
 const app = express();
@@ -22,6 +24,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/profile", profileRoutes);
+app.use("/wallet", walletRoutes);
 
 app.use("/", lotRoutes);
 app.use("/public", publicCollectionRoutes);
