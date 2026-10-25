@@ -1,5 +1,16 @@
 const publicCollectionService = require("../services/publicCollectionService");
 
+async function getFeaturedWorks(_req, res, next) {
+    try {
+        const works = await publicCollectionService.getFeaturedWorks();
+
+        return res.status(200).json(works);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
 async function getJapaneseWorks(_req, res, next) {
     try {
         const works = await publicCollectionService.getJapaneseWorks();
@@ -44,6 +55,7 @@ async function searchExternalItems(req, res, next) {
 }
 
 module.exports = {
+    getFeaturedWorks,
     getJapaneseWorks,
     getCuratedWorks,
     getCategories,

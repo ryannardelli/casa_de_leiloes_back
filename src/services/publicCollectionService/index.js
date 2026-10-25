@@ -1,10 +1,13 @@
 const MuseumApiError = require("../../exceptions/domain/publicCollection/MuseumApiError");
 const ExternalApiError = require("../../exceptions/domain/external/ExternalApiError");
 
-async function getJapaneseWorks() {
-    let featuredWorksCache = null;
-    let featuredWorksCacheExpiresAt = 0;
+let featuredWorksCache = null;
+let featuredWorksCacheExpiresAt = 0;
 
+let curatedWorksCache = null;
+let curatedWorksCacheExpiresAt = 0;
+
+async function getJapaneseWorks() {
     if (featuredWorksCache && Date.now() < featuredWorksCacheExpiresAt) {
         return featuredWorksCache;
     }
@@ -60,9 +63,6 @@ async function getJapaneseWorks() {
 }
 
 async function getCuratedWorks() {
-    let curatedWorksCache = null;
-    let curatedWorksCacheExpiresAt = 0;
-
     if (curatedWorksCache && Date.now() < curatedWorksCacheExpiresAt) {
         return curatedWorksCache;
     }
@@ -144,6 +144,64 @@ async function getCategories() {
     }
 }
 
+async function getFeaturedWorks() {
+    if (featuredWorksCache && Date.now() < featuredWorksCacheExpiresAt) {
+        return featuredWorksCache;
+    }
+
+    try {
+       const response = await fetch(
+         `${process.env.EXTERNAL_API_SEARCH_URL}/search?isHighlight=true&hasImages=true`
+        );
+
+        if (!response.ok) throw new MuseumApiError();
+
+        const data = await response.json();
+
+        if (!data.objectIDs || data.objectIDs.length === 0) {
+            featuredWorksCache = [];
+            featuredWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
+
+            return featuredWorksCache;
+        }
+
+        const objectIds = data.objectIDs.slice(0, 20);
+
+        const works = await Promise.all(
+            objectIds.map(async (id) => {
+                const response = await fetch(
+                    `${process.env.EXTERNAL_API_BASE_URL}/objects/${id}`
+                );
+
+                if (!response.ok) return null;
+
+                const work = await response.json();
+
+                if (!work.primaryImageSmall && !work.primaryImage) return null;
+
+                return {
+                    externalItemId: work.objectID,
+                    title: work.title,
+                    artist: work.artistDisplayName,
+                    category: work.classification,
+                    imageUrl: work.primaryImageSmall || work.primaryImage,
+                    objectDate: work.objectDate,
+                    department: work.department
+                };
+            })
+        );
+
+        featuredWorksCache = works.filter((work) => work);
+        featuredWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
+
+        return featuredWorksCache;
+    } catch (err) {
+        if (err instanceof MuseumApiError) throw err;
+
+        throw new MuseumApiError();
+    }
+}
+
 async function searchExternalItems(query) {
   try {
     const url = `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=${encodeURIComponent(query)}&hasImages=true`;
@@ -204,5 +262,6 @@ module.exports = {
     getJapaneseWorks,
     getCuratedWorks,
     getCategories,
+    getFeaturedWorks,
     searchExternalItems
 };

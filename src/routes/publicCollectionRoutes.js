@@ -12,6 +12,23 @@ const publicCollectionController = require("../controllers/PublicCollection");
 
 /**
  * @swagger
+ * /public/collections/featured:
+ *   get:
+ *     summary: Retorna obras selecionadas para os destaques
+ *     tags: [Public Collection]
+ *     responses:
+ *       200:
+ *         description: Obras em destaque retornadas com sucesso
+ *       502:
+ *         description: Falha ao consultar a API do museu
+ */
+router.get(
+    "/collections/featured",
+    publicCollectionController.getFeaturedWorks
+);
+
+/**
+ * @swagger
  * /public/collections/japanese:
  *   get:
  *     summary: Retorna obras de arte japonesa
