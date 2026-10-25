@@ -1,11 +1,14 @@
+const { toWalletDto } = require('../dtos/wallet/toWalletDto');
+const { toWalletTransactionDto } = require('../dtos/wallet/toWalletTransactionDto');
+
 const walletService = require('../services/WalletService');
 
 async function getWallet(req, res, next) {
     try {
         const bidderId = req.user.id;
         const balance = await walletService.getWalletBalance(bidderId);
-        
-        return res.status(200).json(balance);
+
+        return res.status(200).json(toWalletDto(balance));
     } catch (err) {
         next(err);
     }
@@ -20,7 +23,7 @@ async function createDeposit(req, res, next) {
 
         return res.status(201).json({
             message: "Depósito realizado com sucesso!",
-            data: transaction
+            data: toWalletTransactionDto(transaction)
         });
     } catch (err) {
         next(err);
@@ -30,9 +33,9 @@ async function createDeposit(req, res, next) {
 async function listTransactions(req, res, next) {
     try {
         const bidderId = req.user.id;
-        const result = await walletService.getTransactions(bidderId, req.query);
+        const transactions = await walletService.getTransactions(bidderId);
 
-        return res.status(200).json(result);
+        return res.status(200).json(transactions.map(toWalletTransactionDto));
     } catch (err) {
         next(err);
     }
@@ -45,7 +48,7 @@ async function findTransactionById(req, res, next) {
 
         const transaction = await walletService.getTransactionById(bidderId, id);
 
-        return res.status(200).json(transaction);
+        return res.status(200).json(toWalletTransactionDto(transaction));
     } catch (err) {
         next(err);
     }
