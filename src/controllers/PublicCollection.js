@@ -1,8 +1,8 @@
 const publicCollectionService = require("../services/publicCollectionService");
 
-async function getFeaturedWorks(_req, res, next) {
+async function getJapaneseWorks(_req, res, next) {
     try {
-        const works = await publicCollectionService.getFeaturedWorks();
+        const works = await publicCollectionService.getJapaneseWorks();
 
         return res.status(200).json(works);
     } catch (err) {
@@ -30,8 +30,22 @@ async function getCategories(_req, res, next) {
     }
 }
 
+async function searchExternalItems(req, res, next) {
+    try {
+        const items = await publicCollectionService.searchExternalItems(req.query.q);
+
+        return res.status(200).json({
+            total: items.length,
+            items
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
-    getFeaturedWorks,
+    getJapaneseWorks,
     getCuratedWorks,
-    getCategories
+    getCategories,
+    searchExternalItems
 };

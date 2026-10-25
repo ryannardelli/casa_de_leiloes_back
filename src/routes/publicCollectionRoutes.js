@@ -12,19 +12,19 @@ const publicCollectionController = require("../controllers/PublicCollection");
 
 /**
  * @swagger
- * /public/collections/featured:
+ * /public/collections/japanese:
  *   get:
- *     summary: Retorna obras em destaque
+ *     summary: Retorna obras de arte japonesa
  *     tags: [Public Collection]
  *     responses:
  *       200:
- *         description: Obras retornadas com sucesso
+ *         description: Obras japonesas retornadas com sucesso
  *       502:
  *         description: Falha ao consultar a API do museu
  */
 router.get(
-    "/collections/featured",
-    publicCollectionController.getFeaturedWorks
+    "/collections/japanese",
+    publicCollectionController.getJapaneseWorks
 );
 
 /**
@@ -59,6 +59,30 @@ router.get(
 router.get(
     "/collections/categories",
     publicCollectionController.getCategories
+);
+
+/**
+ * @swagger
+ * /public/external-items/search:
+ *   get:
+ *     summary: Pesquisa obras na API externa do museu
+ *     tags: [Public Collection]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Termo utilizado para pesquisar as obras
+ *     responses:
+ *       200:
+ *         description: Obras encontradas com sucesso
+ *       502:
+ *         description: Falha ao consultar a API externa do museu
+ */
+router.get(
+    "/external-items/search",
+    publicCollectionController.searchExternalItems
 );
 
 module.exports = router;

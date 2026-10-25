@@ -1,6 +1,7 @@
 const MuseumApiError = require("../../exceptions/domain/publicCollection/MuseumApiError");
+const ExternalApiError = require("../../exceptions/domain/external/ExternalApiError");
 
-async function getFeaturedWorks() {
+async function getJapaneseWorks() {
     let featuredWorksCache = null;
     let featuredWorksCacheExpiresAt = 0;
 
@@ -143,8 +144,65 @@ async function getCategories() {
     }
 }
 
+async function searchExternalItems(query) {
+  try {
+    const url = `${process.env.EXTERNAL_API_SEARCH_URL}/search?q=${encodeURIComponent(query)}&hasImages=true`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new ExternalApiError();
+    }
+
+    const data = await response.json();
+
+    if (!data.objectIDs || data.objectIDs.length === 0) {
+      return [];
+    }
+
+    const objectIds = data.objectIDs.slice(0, 10);
+
+    const items = await Promise.all(
+      objectIds.map(async (objectID) => {
+        const itemResponse = await fetch(
+          `${process.env.EXTERNAL_API_BASE_URL}/objects/${objectID}`
+        );
+
+        if (!itemResponse.ok) {
+          throw new ExternalApiError();
+        }
+
+        const item = await itemResponse.json();
+
+        return {
+          externalItemId: item.objectID,
+          title: item.title,
+          artist: item.artistDisplayName,
+          objectDate: item.objectDate,
+          imageUrl: item.primaryImageSmall || item.primaryImage || null,
+          department: item.department,
+          medium: item.medium
+        };
+      })
+    );
+
+    return items;
+  } catch (error) {
+    if (error instanceof ExternalApiError) {
+      throw error;
+    }
+
+    throw new ExternalApiError();
+  }
+}
+
 module.exports = {
-    getFeaturedWorks,
+  searchExternalItems
+};
+
+module.exports = {
+    getJapaneseWorks,
     getCuratedWorks,
-    getCategories
+    getCategories,
+    searchExternalItems
 };
