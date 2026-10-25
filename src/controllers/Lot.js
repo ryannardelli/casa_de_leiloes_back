@@ -12,7 +12,7 @@ async function create(req, res, next) {
         );
 
         return res.status(201).json({ 
-            message: "Lote criado com sucesso a partir do item externo!",
+            message: "Lote criado com sucesso!",
             data: lot 
         });
     } catch (err) {
@@ -30,7 +30,7 @@ async function findByAuctioneer(req, res, next) {
     }
 }
 
-async function findPublicLots(req, res, next) {
+async function findPublicLots(_req, res, next) {
     try {
         const lots = await lotService.getPublicLots();
         return res.status(200).json(lots);

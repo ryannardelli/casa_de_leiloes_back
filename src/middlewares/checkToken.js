@@ -2,7 +2,7 @@ const TokenInvalidError = require("../exceptions/common/TokenInvalidError");
 const UnauthorizedError = require("../exceptions/common/UnauthorizedError");
 const jwt = require("jsonwebtoken");
 
-function checkToken(req, res, next) {
+function checkToken(req, _res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -15,7 +15,7 @@ function checkToken(req, res, next) {
         req.user = decoded;
         next();
     } catch (e) {
-        throw new TokenInvalid();
+        throw new TokenInvalidError();
     }
 }
 

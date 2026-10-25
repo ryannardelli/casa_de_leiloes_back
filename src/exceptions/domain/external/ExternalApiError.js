@@ -1,5 +1,5 @@
 class ExternalApiError extends Error {
-    constructor(message = "Não foi possível conectar à API externa para buscar o item.") {
+    constructor(message = "Não foi possível carregar os dados do item no momento. Tente novamente em instantes.") {
         super(message);
         this.name = 'ExternalApiError';
         this.statusCode = 502;

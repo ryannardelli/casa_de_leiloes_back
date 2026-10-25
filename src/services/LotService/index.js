@@ -6,34 +6,61 @@ const LotHasBidsError = require('../../exceptions/domain/lot/LotHasBidsError');
 
 const ExternalApiError = require('../../exceptions/domain/external/ExternalApiError');
 
-async function createLotFromExternalItem(auctioneerId, externalItemId, lotData) {
-    let externalItemData;
-    try {
-        externalItemData = {
-            title: "Item Exemplo da API",
-            description: "Descrição vinda da API externa",
-            imageUrl: "https://example.com/image.jpg",
-            attributes: { marca: "Exemplo", ano: 2026 }
-        };
-    } catch (error) {
-        throw new ExternalApiError();
+async function createLotFromExternalItem(
+  auctioneerId,
+  externalItemId,
+  lotData
+) {
+  let externalItemData;
+
+  try {
+    const response = await fetch(
+      `${process.env.EXTERNAL_API_BASE_URL}/objects/${externalItemId}`
+    );
+
+    if (!response.ok) {
+      throw new ExternalApiError();
     }
 
-    const newLot = await Lot.create({
-        auctioneerId,
-        externalItemId,
-        title: externalItemData.title,
-        description: externalItemData.description,
-        imageUrl: externalItemData.imageUrl,
-        attributes: externalItemData.attributes,
-        startingPrice: lotData.startingPrice,
-        minimumIncrement: lotData.minimumIncrement,
-        startAt: lotData.startAt,
-        endAt: lotData.endAt,
-        status: "SCHEDULED"
-    });
+    const item = await response.json();
 
-    return newLot;
+    externalItemData = {
+      title: item.title,
+      description: item.objectDate
+        ? `${item.objectDate} - ${item.medium || "Sem descrição"}`
+        : item.medium || "Sem descrição",
+      imageUrl: item.primaryImage || item.primaryImageSmall || null,
+      attributes: {
+        artist: item.artistDisplayName,
+        department: item.department,
+        culture: item.culture,
+        objectDate: item.objectDate,
+        medium: item.medium
+      }
+    };
+  } catch (error) {
+    if (error instanceof ExternalApiError) {
+      throw error;
+    }
+
+    throw new ExternalApiError();
+  }
+
+  const newLot = await Lot.create({
+    auctioneerId,
+    externalItemId,
+    title: externalItemData.title,
+    description: externalItemData.description,
+    imageUrl: externalItemData.imageUrl,
+    attributes: externalItemData.attributes,
+    startingPrice: lotData.startingPrice,
+    minimumIncrement: lotData.minimumIncrement,
+    startAt: lotData.startAt,
+    endAt: lotData.endAt,
+    status: "SCHEDULED"
+  });
+
+  return newLot;
 }
 
 async function getLotsByAuctioneer(auctioneerId) {
