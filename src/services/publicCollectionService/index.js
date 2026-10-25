@@ -1,6 +1,9 @@
 const MuseumApiError = require("../../exceptions/domain/publicCollection/MuseumApiError");
 const ExternalApiError = require("../../exceptions/domain/external/ExternalApiError");
 
+let japaneseWorksCache = null;
+let japaneseWorksCacheExpiresAt = 0;
+
 let featuredWorksCache = null;
 let featuredWorksCacheExpiresAt = 0;
 
@@ -8,8 +11,8 @@ let curatedWorksCache = null;
 let curatedWorksCacheExpiresAt = 0;
 
 async function getJapaneseWorks() {
-    if (featuredWorksCache && Date.now() < featuredWorksCacheExpiresAt) {
-        return featuredWorksCache;
+    if (japaneseWorksCache && Date.now() < japaneseWorksCacheExpiresAt) {
+        return japaneseWorksCache;
     }
 
     try {
@@ -22,9 +25,9 @@ async function getJapaneseWorks() {
         const data = await response.json();
 
         if (!data.objectIDs) {
-            featuredWorksCache = [];
-            featuredWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
-            return featuredWorksCache;
+            japaneseWorksCache = [];
+            japaneseWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
+            return japaneseWorksCache;
         }
 
         const works = await Promise.all(
@@ -51,10 +54,10 @@ async function getJapaneseWorks() {
             })
         );
 
-        featuredWorksCache = works.filter((work) => work).slice(0, 8);
-        featuredWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
+        japaneseWorksCache = works.filter((work) => work).slice(0, 8);
+        japaneseWorksCacheExpiresAt = Date.now() + 30 * 60 * 1000;
 
-        return featuredWorksCache;
+        return japaneseWorksCache;
     } catch (err) {
         if (err instanceof MuseumApiError) throw err;
 
