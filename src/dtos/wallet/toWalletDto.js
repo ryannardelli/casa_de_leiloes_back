@@ -1,8 +1,8 @@
 function toWalletDto(wallet) {
     return {
-        total: wallet.totalBalance,
-        committed: wallet.committedBalance,
-        available: wallet.availableBalance
+        total: wallet.total,
+        committed: wallet.committed,
+        available: wallet.available
     };
 }
 

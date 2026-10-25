@@ -1,5 +1,3 @@
-const WalletRepository = require('../../repositories/walletRepository');
-
 const WalletTransactionNotFoundError = require('../../exceptions/domain/wallet/WalletTransactionNotFoundError');
 const walletRepository = require('../../repositories/walletRepository');
 
@@ -8,7 +6,7 @@ async function getWalletBalance(bidderId) {
 
     if (!wallet) {
         wallet = await walletRepository.create({
-            bidderId,
+            userId: bidderId,
             totalBalance: 0,
             committedBalance: 0,
             availableBalance: 0
@@ -27,7 +25,7 @@ async function deposit(bidderId, amount) {
 
     if (!wallet) {
         wallet = await walletRepository.create({
-            bidderId,
+            userId: bidderId,
             totalBalance: 0,
             committedBalance: 0,
             availableBalance: 0

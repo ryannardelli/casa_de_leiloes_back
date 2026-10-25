@@ -4,7 +4,7 @@ const Wallet = require("../models/Wallet");
 module.exports = {
     findByBidderId: (bidderId) =>
         Wallet.findOne({
-            where: { bidderId },
+            where: { userId: bidderId },
         }),
 
     create: (data) => Wallet.create(data),
@@ -19,10 +19,7 @@ module.exports = {
 
     findTransactionById: (transactionId, walletId) =>
         WalletTransaction.findOne({
-            where: {
-                id: transactionId,
-                walletId,
-            },
+            where: { id: transactionId, walletId },
         }),
 
     save: (wallet) => wallet.save(),

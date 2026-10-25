@@ -1,3 +1,4 @@
+
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/database");
 
@@ -14,16 +15,22 @@ const Wallet = sequelize.define("Wallet", {
         unique: true,
     },
 
-    balance: {
+    totalBalance: {
         type: DataTypes.DECIMAL(12, 2),
         allowNull: false,
         defaultValue: 0,
-        validate: {
-            min: {
-                args: [0],
-                msg: "O saldo não pode ser negativo."
-            }
-        }
+    },
+
+    committedBalance: {
+        type: DataTypes.DECIMAL(12, 2),
+        allowNull: false,
+        defaultValue: 0,
+    },
+
+    availableBalance: {
+        type: DataTypes.DECIMAL(12, 2),
+        allowNull: false,
+        defaultValue: 0,
     },
 });
 

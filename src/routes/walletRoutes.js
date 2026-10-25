@@ -80,7 +80,7 @@ router.post(
  * @swagger
  * /wallet/transactions:
  *   get:
- *     summary: Listar o extrato paginado de transações da carteira
+ *     summary: Listar o extrato de transações da carteira
  *     tags: [Bidder Wallet]
  *     security:
  *       - bearerAuth: []
