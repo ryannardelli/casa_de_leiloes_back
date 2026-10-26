@@ -103,11 +103,6 @@ async function login({ email, password }) {
       secret,
       { expiresIn: "1h" }
     );
-    // const token = jwt.sign(
-    //   { id: user.id, email: user.email, role: user.role }, 
-    //   secret, 
-    //   { expiresIn: '1h' }
-    // );
 
     return {
       token,
