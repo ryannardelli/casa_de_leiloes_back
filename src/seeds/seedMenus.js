@@ -61,34 +61,44 @@ async function seedMenus() {
       icon: "Gavel",
       order: 8,
     },
+
+    {
+      key: "bidder-lots",
+      name: "Vitrine de lotes",
+      route: "/bidder/lots",
+      icon: "Store",
+      order: 9,
+    },
+
     {
       key: "bidder-wallet",
       name: "Minha carteira",
       route: "/bidder/wallet",
       icon: "Wallet",
-      order: 9,
+      order: 10,
     },
     {
       key: "bidder-my-wins",
       name: "Meus arremates",
       route: "/bidder/my-wins",
       icon: "Trophy",
-      order: 10,
+      order: 11,
     },
     {
       key: "bidder-profile",
       name: "Meu perfil",
       route: "/bidder/profile",
       icon: "UserRound",
-      order: 11,
+      order: 12,
     },
 
+    // --- Menus do Administrador (ADMIN) ---
      {
       key: "admin-home",
       name: "Visão geral",
       route: "/admin/dashboard",
       icon: "LayoutDashboard",
-      order: 12,
+      order: 13,
     },
 
     {
@@ -96,12 +106,12 @@ async function seedMenus() {
       name: "Usuários",
       route: "/admin/users",
       icon: "UsersRound",
-      order: 13,
+      order: 14,
     },
 
-    { key: "admin-menus", name: "Menus", route: "/admin/menus", icon: "Layers", order: 14 },
+    { key: "admin-menus", name: "Menus", route: "/admin/menus", icon: "Layers", order: 15 },
 
-     { key: "admin-profiles", name: "Perfis", route: "/admin/profiles", icon: "Users", order: 15 },
+     { key: "admin-profiles", name: "Perfis", route: "/admin/profiles", icon: "Users", order: 16 },
   ];
 
   for (const menu of menus) {

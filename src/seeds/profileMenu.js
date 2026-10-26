@@ -85,6 +85,7 @@ async function seedProfileMenus() {
   const licitanteMenuKeys = [
     "bidder-dashboard",
     "bidder-my-bids",
+    "bidder-lots",
     "bidder-wallet",
     "bidder-my-wins",
     "bidder-profile",
