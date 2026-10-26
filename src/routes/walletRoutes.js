@@ -84,25 +84,13 @@ router.post(
  *     tags: [Bidder Wallet]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *         description: Número da página
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           default: 10
- *         description: Quantidade de itens por página
  *     responses:
  *       200:
- *         description: Extrato paginado retornado com sucesso
+ *         description: Extrato de transações retornado com sucesso
  *       401:
  *         description: Não autorizado
  */
+
 router.get(
     "/transactions",
     checkToken,
