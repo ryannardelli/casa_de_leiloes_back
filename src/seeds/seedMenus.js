@@ -82,6 +82,26 @@ async function seedMenus() {
       icon: "UserRound",
       order: 11,
     },
+
+     {
+      key: "admin-home",
+      name: "Visão geral",
+      route: "/admin/dashboard",
+      icon: "LayoutDashboard",
+      order: 12,
+    },
+
+    {
+      key: "admin-users",
+      name: "Usuários",
+      route: "/admin/users",
+      icon: "UsersRound",
+      order: 13,
+    },
+
+    { key: "admin-menus", name: "Menus", route: "/admin/menus", icon: "Layers", order: 14 },
+
+     { key: "admin-profiles", name: "Perfis", route: "/admin/profiles", icon: "Users", order: 15 },
   ];
 
   for (const menu of menus) {

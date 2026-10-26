@@ -3,6 +3,12 @@ const Profile = require('../models/Profile');
 async function seedProfiles() {
   const profiles = [
     {
+      name: "Administrador",
+      description: "Responsável pela administração geral da plataforma, incluindo o gerenciamento de usuários, perfis de acesso e permissões",
+      system: true
+    },
+
+    {
       name: "Leiloeiro",
       description: "Responsável por montar e gerenciar lotes de leilão, definir valores iniciais, incrementos e acompanhar resultados.",
       system: true

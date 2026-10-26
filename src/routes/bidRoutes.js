@@ -5,6 +5,7 @@ const router = express.Router();
 
 const bidController = require("../controllers/Bid");
 const { checkToken } = require("../middlewares/checkToken");
+const authorize = require("../middlewares/authorize");
 
 /**
  * @swagger
@@ -47,6 +48,7 @@ const { checkToken } = require("../middlewares/checkToken");
 router.post(
     "/lots/:lotId",
     checkToken,
+    authorize(["Licitante"]),
     bidController.createBid
 );
 
@@ -92,6 +94,7 @@ router.get(
 router.get(
     "/bidder/my-bids",
     checkToken,
+    authorize(["Licitante"]),
     bidController.listMyBids
 );
 

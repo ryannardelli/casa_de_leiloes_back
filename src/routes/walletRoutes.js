@@ -3,6 +3,7 @@ const router = express.Router();
 
 const walletController = require("../controllers/Wallet");
 const { checkToken } = require("../middlewares/checkToken");
+const authorize = require("../middlewares/authorize");
 
 /**
  * @swagger
@@ -38,6 +39,7 @@ const { checkToken } = require("../middlewares/checkToken");
 router.get(
     "/",
     checkToken,
+    authorize(["Licitante"]),
     walletController.getWallet
 );
 
@@ -73,6 +75,7 @@ router.get(
 router.post(
     "/deposits",
     checkToken,
+    authorize(["Licitante"]),
     walletController.createDeposit
 );
 
@@ -94,6 +97,7 @@ router.post(
 router.get(
     "/transactions",
     checkToken,
+    authorize(["Licitante"]),
     walletController.listTransactions
 );
 
@@ -123,6 +127,7 @@ router.get(
 router.get(
     "/transactions/:id",
     checkToken,
+    authorize(["Licitante"]),
     walletController.findTransactionById
 );
 

@@ -3,6 +3,10 @@ const Menu = require("../models/Menu");
 const ProfileMenu = require("../models/ProfileMenu");
 
 async function seedProfileMenus() {
+   const admin = await Profile.findOne({
+    where: { name: "Administrador" },
+  });
+
   const leiloeiro = await Profile.findOne({
     where: { name: "Leiloeiro" },
   });
@@ -10,6 +14,10 @@ async function seedProfileMenus() {
   const licitante = await Profile.findOne({
     where: { name: "Licitante" },
   });
+
+   if (!admin) {
+    throw new Error('Profile "Administrador" não encontrado.');
+  }
 
   if (!leiloeiro) {
     throw new Error('Profile "Leiloeiro" não encontrado.');
@@ -19,7 +27,33 @@ async function seedProfileMenus() {
     throw new Error('Profile "Licitante" não encontrado.');
   }
 
-  // Menus exclusivos do Leiloeiro
+  // Menus exclusivos do Administrador
+    const adminMenuKeys = [
+    "admin-home",
+    "admin-users",
+    "admin-menus",
+    "admin-profiles",
+  ];
+
+  for (const key of adminMenuKeys) {
+    const menu = await Menu.findOne({
+      where: { key },
+    });
+
+    if (!menu) {
+      console.warn(`Menu "${key}" não encontrado.`);
+      continue;
+    }
+
+    await ProfileMenu.findOrCreate({
+      where: {
+        profileId: admin.id,
+        menuId: menu.id,
+      },
+    });
+  }
+
+  
   const leiloeiroMenuKeys = [
     "auctioneer-dashboard",
     "auctioneer-lots",

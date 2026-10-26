@@ -52,15 +52,18 @@ async function createUser({ name, email, password }) {
 
   const token = jwt.sign(
     {
-      id: user.id,
-      email: user.email,
-      role: profile.name,
+        id: user.id,
+        email: user.email,
+        profile: {
+            id: profile.id,
+            name: profile.name,
+        },
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "1d",
+        expiresIn: "1d",
     }
-  );
+);
 
   return {
     message: "Usuário criado com sucesso!",
@@ -83,20 +86,41 @@ async function login({ email, password }) {
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) throw new InvalidCredentialsError();
 
+  const profile = await profileRepository.findById(user.profileId);
+   if (!profile) throw new ProfileNotFoundError();
+
   try {
     const secret = process.env.JWT_SECRET;
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role }, 
-      secret, 
-      { expiresIn: '1h' }
+      {
+        id: user.id,
+        email: user.email,
+        profile: {
+          id: profile.id,
+          name: profile.name,
+        },
+      },
+      secret,
+      { expiresIn: "1h" }
     );
+    // const token = jwt.sign(
+    //   { id: user.id, email: user.email, role: user.role }, 
+    //   secret, 
+    //   { expiresIn: '1h' }
+    // );
 
     return {
       token,
       user: {
-        uuid: user.uuid,
+        id: user.id,
         name: user.name,
         email: user.email,
+        profile: profile
+          ? {
+              id: profile.id,
+              name: profile.name,
+            }
+          : null,
       },
     };
   } catch (err) {

@@ -3,6 +3,7 @@ const router = express.Router();
 
 const lotController = require("../controllers/Lot");
 const { checkToken } = require("../middlewares/checkToken");
+const authorize = require("../middlewares/authorize");
 
 /**
  * @swagger
@@ -57,6 +58,7 @@ const { checkToken } = require("../middlewares/checkToken");
 router.post(
     "/lots",
     checkToken,
+    authorize(["Leiloeiro"]),
     lotController.create
 );
 
@@ -77,6 +79,7 @@ router.post(
 router.get(
     "/lots",
     checkToken,
+    authorize(["Leiloeiro"]),
     lotController.findByAuctioneer
 );
 
@@ -131,6 +134,7 @@ router.get(
 router.patch(
     "/lots/:id",
     checkToken,
+    authorize(["Leiloeiro"]),
     lotController.update
 );
 
@@ -164,6 +168,7 @@ router.patch(
 router.patch(
     "/lots/:id/cancel",
     checkToken,
+    authorize(["Leiloeiro"]),
     lotController.cancel
 );
 

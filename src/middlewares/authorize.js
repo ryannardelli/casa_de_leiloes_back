@@ -1,17 +1,19 @@
 const AccessDeniedError = require("../exceptions/common/AccessDeniedError");
 
-function authorize(roles = []) {
-    if(typeof roles === "string") {
-        roles = [roles];
+function authorize(profiles = []) {
+    if (typeof profiles === "string") {
+        profiles = [profiles];
     }
 
-    return(req, _res, next) => {
-        const userRole = req.user.role;
+    return (req, _res, next) => {
+        const userProfile = req.user?.profile?.name;
 
-        if(!roles.includes(userRole)) throw new AccessDeniedError();
+        if (!profiles.includes(userProfile)) {
+            throw new AccessDeniedError();
+        }
 
         next();
-    }
+    };
 }
 
 module.exports = authorize;

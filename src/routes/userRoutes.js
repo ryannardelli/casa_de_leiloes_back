@@ -50,7 +50,7 @@ const authorize = require("../middlewares/authorize");
  *       200:
  *         description: Lista de usuários retornada com sucesso
  */
-router.get("/findAll", checkToken, authorize(["admin"]), userController.findAll);
+router.get("/findAll", checkToken, authorize(["Administrador"]), userController.findAll);
 
 /**
  * @swagger
@@ -140,7 +140,7 @@ router.get("/:id", checkToken, userController.findById);
  *       404:
  *         description: Usuário não encontrado
  */
-router.patch("/:id", checkToken, authorize(["admin"]), userController.update);
+router.patch("/:id", checkToken, authorize(["Administrador"]), userController.update);
 
 /**
  * @swagger
@@ -164,7 +164,7 @@ router.patch("/:id", checkToken, authorize(["admin"]), userController.update);
  *       404:
  *         description: Usuário não encontrado
  */
-router.delete("/:id", checkToken, authorize(["admin"]), userController.remove);
+router.delete("/:id", checkToken, authorize(["Administrador"]), userController.remove);
 
 /**
  * @swagger
@@ -238,6 +238,6 @@ router.delete("/:id", checkToken, authorize(["admin"]), userController.remove);
  *                   type: string
  *                   example: "Acesso não autorizado."
  */
-router.patch("/associateProfile/:id", checkToken, authorize(["admin"]), userController.updateRole);
+router.patch("/associateProfile/:id", checkToken, authorize(["Administrador"]), userController.updateRole);
 
 module.exports = router;
