@@ -1,7 +1,7 @@
 const { toWalletDto } = require('../dtos/wallet/toWalletDto');
 const { toWalletTransactionDto } = require('../dtos/wallet/toWalletTransactionDto');
 
-const walletService = require('../services/WalletService');
+const walletService = require('../services/walletService');
 
 async function getWallet(req, res, next) {
     try {
