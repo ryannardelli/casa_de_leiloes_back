@@ -17,6 +17,8 @@ const createInitialAdmin = require("./seeds/admin.seed");
 
 const { initializeSocket } = require("./configs/socket");
 
+const { startLotScheduler } = require("./works/lotScheduler");
+
 const PORT = process.env.PORT || 3000;
 
 if (!global.crypto) {
@@ -163,6 +165,8 @@ async function connectDatabase() {
 
     const server = http.createServer(app);
     initializeSocket(server, app);
+
+    startLotScheduler();
 
     server.listen(PORT, "0.0.0.0", () => {
       const networkInterfaces = os.networkInterfaces();

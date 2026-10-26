@@ -93,6 +93,97 @@ async function getLotById(id) {
     return lot;
 }
 
+async function updateScheduledLotsStatus() {
+    const now = new Date();
+
+    const [updatedCount] = await Lot.update(
+        {
+            status: "LIVE"
+        },
+        {
+            where: {
+                status: "SCHEDULED",
+                startAt: {
+                    [Op.lte]: now
+                },
+                endAt: {
+                    [Op.gt]: now
+                }
+            }
+        }
+    );
+
+    return updatedCount;
+}
+
+async function updateScheduledLotsStatus() {
+    const now = new Date();
+
+    const [updatedCount] = await Lot.update(
+        {
+            status: "LIVE"
+        },
+        {
+            where: {
+                status: "SCHEDULED",
+                startAt: {
+                    [Op.lte]: now
+                },
+                endAt: {
+                    [Op.gt]: now
+                }
+            }
+        }
+    );
+
+    return updatedCount;
+}
+
+async function updateScheduledLotsStatus() {
+    const now = new Date();
+
+    const [updatedCount] = await Lot.update(
+        {
+            status: "LIVE"
+        },
+
+        {
+            where: {
+                status: "SCHEDULED",
+                startAt: {
+                    [Op.lte]: now
+                },
+                endAt: {
+                    [Op.gt]: now
+                }
+            }
+        }
+    );
+
+    return updatedCount;
+}
+
+async function updateExpiredLotsStatus() {
+    const now = new Date();
+
+    const [updatedCount] = await Lot.update(
+        {
+            status: "CLOSED"
+        },
+
+        {
+            where: {
+                status: "LIVE",
+                endAt: {
+                    [Op.lte]: now
+                }
+            }
+        }
+    );
+
+    return updatedCount;
+}
+
 async function updateLot(id, auctioneerId, updateData) {
     const lot = await getLotById(id);
 
@@ -129,6 +220,8 @@ module.exports = {
     createLotFromExternalItem,
     getLotsByAuctioneer,
     getPublicLots,
+    updateExpiredLotsStatus,
+    updateScheduledLotsStatus,
     getLotById,
     updateLot,
     cancelLot
