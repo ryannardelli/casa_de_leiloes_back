@@ -55,7 +55,7 @@ const { checkToken } = require("../middlewares/checkToken");
  *         description: Erro na comunicação com a API externa
  */
 router.post(
-    "/auctioneer/lots",
+    "/lots",
     checkToken,
     lotController.create
 );
@@ -75,7 +75,7 @@ router.post(
  *         description: Não autorizado
  */
 router.get(
-    "/auctioneer/lots",
+    "/lots",
     checkToken,
     lotController.findByAuctioneer
 );
@@ -129,7 +129,7 @@ router.get(
  *         description: Lote não pode ser alterado no estado atual
  */
 router.patch(
-    "/auctioneer/lots/:id",
+    "/lots/:id",
     checkToken,
     lotController.update
 );
@@ -162,48 +162,9 @@ router.patch(
  *         description: Lote já recebeu lances ou não pode ser cancelado
  */
 router.patch(
-    "/auctioneer/lots/:id/cancel",
+    "/lots/:id/cancel",
     checkToken,
     lotController.cancel
-);
-
-/**
- * @swagger
- * /public/lots:
- *   get:
- *     summary: Listar lotes públicos, excluindo os cancelados
- *     tags: [Public Lots]
- *     responses:
- *       200:
- *         description: Lista de lotes públicos retornada com sucesso
- */
-router.get(
-    "/public/lots",
-    lotController.findPublicLots
-);
-
-/**
- * @swagger
- * /public/lots/{id}:
- *   get:
- *     summary: Consultar os detalhes de um lote público
- *     tags: [Public Lots]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID do lote
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Detalhes do lote encontrados
- *       404:
- *         description: Lote não encontrado
- */
-router.get(
-    "/public/lots/:id",
-    lotController.findById
 );
 
 module.exports = router;
