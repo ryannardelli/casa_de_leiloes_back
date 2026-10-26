@@ -6,6 +6,8 @@ const LotHasBidsError = require('../../exceptions/domain/lot/LotHasBidsError');
 
 const ExternalApiError = require('../../exceptions/domain/external/ExternalApiError');
 
+const { Op } = require("sequelize");
+
 async function createLotFromExternalItem(
   auctioneerId,
   externalItemId,
@@ -69,13 +71,19 @@ async function getLotsByAuctioneer(auctioneerId) {
     });
 }
 
-async function getPublicLots() {
+async function getPublicLots(status) {
+    const where = {};
+
+    if (status) {
+        where.status = status;
+    } else {
+        where.status = {
+            [Op.ne]: "CANCELLED"
+        };
+    }
+
     return await Lot.findAll({
-        where: {
-            status: {
-                [require('sequelize').Op.ne]: 'CANCELLED'
-            }
-        }
+        where
     });
 }
 

@@ -15,6 +15,8 @@ const seedMenus = require("./seeds/seedMenus");
 const seedProfileMenu = require("./seeds/profileMenu");
 const createInitialAdmin = require("./seeds/admin.seed");
 
+const { initializeSocket } = require("./configs/socket");
+
 const PORT = process.env.PORT || 3000;
 
 if (!global.crypto) {
@@ -160,6 +162,7 @@ async function connectDatabase() {
     await createInitialAdmin();
 
     const server = http.createServer(app);
+    initializeSocket(server, app);
 
     server.listen(PORT, "0.0.0.0", () => {
       const networkInterfaces = os.networkInterfaces();

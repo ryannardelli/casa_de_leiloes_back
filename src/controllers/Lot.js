@@ -30,9 +30,12 @@ async function findByAuctioneer(req, res, next) {
     }
 }
 
-async function findPublicLots(_req, res, next) {
+async function findPublicLots(req, res, next) {
     try {
-        const lots = await lotService.getPublicLots();
+        const { status } = req.query;
+
+        const lots = await lotService.getPublicLots(status);
+
         return res.status(200).json(lots);
     } catch (err) {
         next(err);

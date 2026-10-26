@@ -7,13 +7,19 @@ const lotController = require("../controllers/Lot")
  * @swagger
  * /public-lots/lots:
  *   get:
- *     summary: Listar lotes públicos, excluindo os cancelados
+ *     summary: Listar lotes públicos por status
  *     tags: [Public Lots]
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [SCHEDULED, LIVE, CLOSED, CANCELLED]
+ *         description: Filtrar lotes por status. Se omitido, retorna todos os lotes, exceto os cancelados.
  *     responses:
  *       200:
- *         description: Lista de lotes públicos retornada com sucesso
- *       500:
- *         description: Erro interno do servidor
+ *         description: Lista de lotes públicos
  */
 router.get(
     "/lots",

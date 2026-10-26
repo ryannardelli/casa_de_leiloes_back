@@ -4,25 +4,50 @@ const { toBidDto } = require("../dtos/bid/toBidDto");
 const { toLiveRoomDto } = require("../dtos/bid/toLiveRoomDto");
 
 async function createBid(req, res, next) {
-try {
-const { lotId } = req.params;
-const { amount } = req.body;
-const bidderId = req.user.id;
+    try {
+        const { lotId } = req.params;
+        const { amount, requestId } = req.body;
+        const bidderId = req.user.id;
 
-    const bid = await bidService.createBid(
-        lotId,
-        bidderId,
-        amount
-    );
+        const bid = await bidService.createBid(
+            lotId,
+            bidderId,
+            amount,
+            requestId
+        );
 
-    return res.status(201).json({
-        message: "Lance registrado com sucesso!",
-        data: toBidDto(bid),
-    });
-} catch (err) {
-    next(err);
-}
+        const liveRoom = await bidService.getLiveRoom(lotId);
 
+        const io = req.app.get("io");
+
+        io.to(`lot:${Number(lotId)}`).emit("bid:updated", {
+            bid: {
+                id: bid.id,
+                lotId: bid.lotId,
+                amount: Number(bid.amount),
+                createdAt: bid.createdAt,
+                status: "ACCEPTED",
+            },
+            
+            lot: {
+                status: liveRoom.status,
+                currentPrice: liveRoom.currentPrice,
+                minimumNextBid: liveRoom.nextMinimumBid,
+                endAt: liveRoom.endAt,
+                totalBids: liveRoom.totalBids,
+            },
+        });
+
+        return res.status(201).json({
+            id: bid.id,
+            lotId: bid.lotId,
+            amount: Number(bid.amount),
+            createdAt: bid.createdAt,
+            status: "ACCEPTED",
+        });
+    } catch (error) {
+        next(error);
+    }
 }
 
 async function listBidsByLotId(req, res, next) {
