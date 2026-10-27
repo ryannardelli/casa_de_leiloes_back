@@ -192,7 +192,11 @@ async function createBid(lotId, bidderId, amount) {
 
         await bidRepository.saveLot(lot, transaction);
 
-        return bid;
+        return {
+            bid,
+            previousLeader: latestBid,
+            lot,
+        };
     });
 }
 
@@ -200,7 +204,7 @@ async function getBidsByLotId(lotId) {
     const lot = await bidRepository.findLotById(lotId);
 
     if (!lot) {
-        throw createError("Lote não encontrado.", 404);
+        throw new LotNotFoundError();
     }
 
     return bidRepository.findAllBidsByLotId(lotId);
