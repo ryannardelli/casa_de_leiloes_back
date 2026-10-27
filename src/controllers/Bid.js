@@ -39,11 +39,14 @@ async function createBid(req, res, next) {
         });
 
         return res.status(201).json({
-            id: bid.id,
-            lotId: bid.lotId,
-            amount: Number(bid.amount),
-            createdAt: bid.createdAt,
-            status: "ACCEPTED",
+            message: "Lance realizado com sucesso!",
+            bid: {
+                id: bid.id,
+                lotId: bid.lotId,
+                amount: Number(bid.amount),
+                createdAt: bid.createdAt,
+                status: "ACCEPTED",
+            },
         });
     } catch (error) {
         next(error);

@@ -14,7 +14,7 @@ const WalletTransaction = sequelize.define("WalletTransaction", {
     },
 
     type: {
-        type: DataTypes.ENUM("DEPOSIT"),
+        type: DataTypes.ENUM("DEPOSIT", "COMMIT", "RELEASE"),
         allowNull: false,
     },
 

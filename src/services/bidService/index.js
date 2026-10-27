@@ -2,6 +2,15 @@ const crypto = require("crypto");
 
 const bidRepository = require("../../repositories/bidRepository");
 
+const InvalidBidAmountError = require("../../exceptions/domain/bids/InvalidBidAmountError");
+const LotNotFoundError = require("../../exceptions/domain/lot/LotNotFoundError");
+const LotNotOpenForBidsError = require("../../exceptions/domain/bids/LotNotOpenForBidsError");
+const BidderAlreadyLeadingError = require("../../exceptions/domain/bids/BidderAlreadyLeadingError");
+const MinimumBidNotMetError = require("../../exceptions/domain/bids/MinimumBidNotMetError");
+const WalletNotFoundError = require("../../exceptions/domain/wallet/WalletNotFoundError");
+const InsufficientBalanceError = require("../../exceptions/domain/bids/InsufficientBalanceError");
+const CurrentLeaderWalletNotFoundError = require("../../exceptions/domain/wallet/CurrentLeaderWalletNotFoundError");
+
 function createError(message, statusCode) {
     const err = new Error(message);
     err.statusCode = statusCode;
@@ -33,10 +42,7 @@ async function createBid(lotId, bidderId, amount) {
     const bidAmount = Number(amount);
 
     if (!Number.isFinite(bidAmount) || bidAmount <= 0) {
-        throw createError(
-            "O valor do lance deve ser maior que zero.",
-            400
-        );
+        throw new InvalidBidAmountError();
     }
 
     return bidRepository.transaction(async (transaction) => {
@@ -47,7 +53,7 @@ async function createBid(lotId, bidderId, amount) {
         );
 
         if (!lot) {
-            throw createError("Lote não encontrado.", 404);
+            throw LotNotFoundError();
         }
 
         const now = new Date();
@@ -59,10 +65,7 @@ async function createBid(lotId, bidderId, amount) {
             now < startAt ||
             now >= endAt
         ) {
-            throw createError(
-                "O lote não está aberto para lances.",
-                400
-            );
+            throw new LotNotOpenForBidsError();
         }
 
         const latestBid = await bidRepository.findLatestBid(
@@ -74,10 +77,7 @@ async function createBid(lotId, bidderId, amount) {
             latestBid &&
             Number(latestBid.bidderId) === Number(bidderId)
         ) {
-            throw createError(
-                "Você já é o líder atual e não pode enviar outro lance.",
-                400
-            );
+            throw new BidderAlreadyLeadingError();
         }
 
         const minimumBid = latestBid
@@ -86,10 +86,7 @@ async function createBid(lotId, bidderId, amount) {
             : Number(lot.startingPrice);
 
         if (bidAmount < minimumBid) {
-            throw createError(
-                `O lance mínimo permitido é ${minimumBid.toFixed(2)}.`,
-                400
-            );
+            throw new MinimumBidNotMetError();
         }
 
         const bidderWallet = await bidRepository.findWalletByBidderId(
@@ -98,14 +95,11 @@ async function createBid(lotId, bidderId, amount) {
         );
 
         if (!bidderWallet) {
-            throw createError("Carteira não encontrada.", 400);
+            throw new WalletNotFoundError();
         }
 
         if (Number(bidderWallet.availableBalance) < bidAmount) {
-            throw createError(
-                "Saldo disponível insuficiente para realizar este lance.",
-                400
-            );
+            throw new InsufficientBalanceError();
         }
 
         if (latestBid) {
@@ -116,10 +110,7 @@ async function createBid(lotId, bidderId, amount) {
                 );
 
             if (!previousWallet) {
-                throw createError(
-                    "Carteira do líder atual não encontrada.",
-                    400
-                );
+                throw new CurrentLeaderWalletNotFoundError();
             }
 
             previousWallet.committedBalance =

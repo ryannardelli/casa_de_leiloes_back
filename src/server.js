@@ -164,7 +164,9 @@ async function connectDatabase() {
     await createInitialAdmin();
 
     const server = http.createServer(app);
-    initializeSocket(server, app);
+    const io = initializeSocket(server);
+
+    app.set("io", io);
 
     startLotScheduler();
 
