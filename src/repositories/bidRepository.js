@@ -27,6 +27,28 @@ module.exports = {
             transaction,
         }),
 
+    findAllBidsByLotId: (lotId) =>
+        Bid.findAll({
+            where: { lotId },
+            include: [
+                {
+                    model: Lot,
+                    as: "lot",
+                    attributes: [
+                        "id",
+                        "title",
+                        "imageUrl",
+                        "currentPrice",
+                        "status",
+                    ],
+                },
+            ],
+            order: [
+                ["createdAt", "DESC"],
+                ["id", "DESC"],
+            ],
+    }),
+
     findAllBidsByBidderId: (bidderId) =>
         Bid.findAll({
             where: { bidderId },

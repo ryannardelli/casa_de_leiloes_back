@@ -71,7 +71,7 @@ router.post(
  *         description: Lote não encontrado
  */
 router.get(
-    "/lots/:lotId/bids",
+    "/lots/:lotId",
     bidController.listBidsByLotId
 );
 

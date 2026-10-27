@@ -217,7 +217,7 @@ async function getLiveRoom(lotId, bidderId = null) {
         throw createError("Lote não encontrado.", 404);
     }
 
-    const bids = await bidRepository.findAllBidsByLotId(lotId);
+    const bids = await bidRepository.findAllBidsByBidderId(lotId);
     const currentBid = bids.length ? bids[bids.length - 1] : null;
 
     const bidderPosition = bidderId
