@@ -1,4 +1,4 @@
-const lotService = require('../services/LotService');
+const lotService = require('../services/lotService');
 
 async function create(req, res, next) {
     try {
