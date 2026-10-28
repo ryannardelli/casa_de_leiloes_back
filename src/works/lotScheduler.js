@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const lotService = require("../services/LotService");
+const lotService = require("../services/lotService");
 
 function startLotScheduler() {
     cron.schedule("* * * * * *", async () => {
