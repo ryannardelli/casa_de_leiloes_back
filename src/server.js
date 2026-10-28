@@ -32,32 +32,6 @@ if (!global.crypto) {
 
 global.crypto.randomUUID ??= crypto.randomUUID;
 
-if (process.env.NODE_ENV !== "test") {
-    server.listen(PORT, "0.0.0.0", () => {
-      const networkInterfaces = os.networkInterfaces();
-
-      let localIP = "localhost";
-
-      for (const interfaceName in networkInterfaces) {
-        for (const net of networkInterfaces[interfaceName]) {
-          if (net.family === "IPv4" && !net.internal) {
-            localIP = net.address;
-          }
-        }
-      }
-
-      console.log(`
-          Servidor rodando com sucesso!
-
-          Local:   http://localhost:${PORT}
-
-          Swagger: http://localhost:${PORT}/api-docs/
-
-          Rede:    http://${localIP}:${PORT}
-      `);
-    });
-}
-
 async function connectDatabase() {
   try {
     await sequelize.authenticate();
@@ -194,10 +168,36 @@ async function connectDatabase() {
 
     await createInitialAdmin();
 
-    const server = http.createServer(app);
-    const io = initializeSocket(server);
+        const server = http.createServer(app);
+      const io = initializeSocket(server);
 
-    app.set("io", io);
+      app.set("io", io);
+
+      if (process.env.NODE_ENV !== "test") {
+        server.listen(PORT, "0.0.0.0", () => {
+          const networkInterfaces = os.networkInterfaces();
+
+          let localIP = "localhost";
+
+          for (const interfaceName in networkInterfaces) {
+            for (const net of networkInterfaces[interfaceName]) {
+              if (net.family === "IPv4" && !net.internal) {
+                localIP = net.address;
+              }
+            }
+          }
+
+          console.log(`
+            Servidor rodando com sucesso!
+
+            Local:   http://localhost:${PORT}
+
+            Swagger: http://localhost:${PORT}/api-docs/
+
+            Rede:    http://${localIP}:${PORT}
+          `);
+        });
+      }
 
     startLotScheduler();
 
