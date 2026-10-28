@@ -2,8 +2,11 @@ const { Server } = require("socket.io");
 
 function initializeSocket(server) {
     const io = new Server(server, {
-        cors: {
-            origin: process.env.CLIENT_URL || "http://localhost:5173",
+       cors: {
+            origin: [
+                process.env.CLIENT_URL || "http://localhost:5173",
+                "https://arremata-app.vercel.app",
+            ],
             methods: ["GET", "POST"],
         },
     });
