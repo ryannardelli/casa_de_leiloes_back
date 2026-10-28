@@ -4,6 +4,11 @@ dns.setDefaultResultOrder("ipv4first");
 
 const os = require("os");
 const crypto = require("crypto");
+
+if (!process.env.DB_HOST) {
+  require("dotenv").config();
+}
+
 const http = require("http");
 
 const app = require("./app");
@@ -26,6 +31,32 @@ if (!global.crypto) {
 }
 
 global.crypto.randomUUID ??= crypto.randomUUID;
+
+if (process.env.NODE_ENV !== "test") {
+    server.listen(PORT, "0.0.0.0", () => {
+      const networkInterfaces = os.networkInterfaces();
+
+      let localIP = "localhost";
+
+      for (const interfaceName in networkInterfaces) {
+        for (const net of networkInterfaces[interfaceName]) {
+          if (net.family === "IPv4" && !net.internal) {
+            localIP = net.address;
+          }
+        }
+      }
+
+      console.log(`
+          Servidor rodando com sucesso!
+
+          Local:   http://localhost:${PORT}
+
+          Swagger: http://localhost:${PORT}/api-docs/
+
+          Rede:    http://${localIP}:${PORT}
+      `);
+    });
+}
 
 async function connectDatabase() {
   try {
@@ -170,30 +201,6 @@ async function connectDatabase() {
 
     startLotScheduler();
 
-    server.listen(PORT, "0.0.0.0", () => {
-      const networkInterfaces = os.networkInterfaces();
-
-      let localIP = "localhost";
-
-      for (const interfaceName in networkInterfaces) {
-        for (const net of networkInterfaces[interfaceName]) {
-          if (net.family === "IPv4" && !net.internal) {
-            localIP = net.address;
-          }
-        }
-      }
-
-      console.log(`
-          Servidor rodando com sucesso!
-
-          Local:   http://localhost:${PORT}
-
-          Swagger: http://localhost:${PORT}/api-docs/
-
-          Rede:    http://${localIP}:${PORT}
-      `);
-    });
-
   } catch (error) {
     console.error("Erro ao conectar com o banco de dados:", error);
 
@@ -201,4 +208,6 @@ async function connectDatabase() {
   }
 }
 
-connectDatabase();
+if (process.env.NODE_ENV !== "test") {
+  connectDatabase();
+}

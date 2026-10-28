@@ -4,13 +4,15 @@ dns.setDefaultResultOrder("ipv4first");
 
 const { Sequelize } = require("sequelize");
 
-if (process.env.NODE_ENV !== "production") {
+const env = process.env.NODE_ENV || "development";
+
+if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
   require("dotenv").config();
 }
 
 let sequelize;
 
-if (process.env.DATABASE_URL) {
+if (env === "production") {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: "postgres",
     logging: false,
