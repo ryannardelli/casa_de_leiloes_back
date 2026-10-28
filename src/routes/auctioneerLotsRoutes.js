@@ -66,13 +66,22 @@ router.post(
  * @swagger
  * /auctioneer/lots:
  *   get:
- *     summary: Listar somente os lotes do leiloeiro autenticado
+ *     summary: Listar os lotes do leiloeiro autenticado
  *     tags: [Auctioneer Lots]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [LIVE, CANCELLED, CLOSED]
+ *         description: Filtra os lotes pelo status informado. Se omitido, retorna todos os lotes do leiloeiro.
+ *         example: LIVE
  *     responses:
  *       200:
- *         description: Lista de lotes do leiloeiro retornada com sucesso
+ *         description: Lista de lotes retornada com sucesso
  *       401:
  *         description: Não autorizado
  */

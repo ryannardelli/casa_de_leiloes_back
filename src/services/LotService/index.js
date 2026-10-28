@@ -8,6 +8,8 @@ const ExternalApiError = require('../../exceptions/domain/external/ExternalApiEr
 
 const { Op } = require("sequelize");
 
+const awardService = require("../../services/awardService");
+
 async function createLotFromExternalItem(
   auctioneerId,
   externalItemId,
@@ -65,9 +67,15 @@ async function createLotFromExternalItem(
   return newLot;
 }
 
-async function getLotsByAuctioneer(auctioneerId) {
+async function getLotsByAuctioneer(auctioneerId, status) {
+    const where = { auctioneerId };
+
+    if (status) {
+        where.status = status;
+    }
+
     return await Lot.findAll({
-        where: { auctioneerId }
+        where
     });
 }
 
@@ -164,24 +172,33 @@ async function updateScheduledLotsStatus() {
 }
 
 async function updateExpiredLotsStatus() {
-    const now = new Date();
+  const now = new Date();
 
-    const [updatedCount] = await Lot.update(
-        {
-            status: "CLOSED"
-        },
+  const expiredLots = await Lot.findAll({
+    attributes: ["id"],
+    where: {
+      status: "LIVE",
+      endAt: {
+        [Op.lte]: now,
+      },
+    },
+  });
 
-        {
-            where: {
-                status: "LIVE",
-                endAt: {
-                    [Op.lte]: now
-                }
-            }
-        }
-    );
+  let updatedCount = 0;
 
-    return updatedCount;
+  for (const lot of expiredLots) {
+    try {
+      await awardService.closeLot(lot.id);
+      updatedCount++;
+    } catch (error) {
+      console.error(
+        `Erro ao encerrar o lote ${lot.id}:`,
+        error.message
+      );
+    }
+  }
+
+  return updatedCount;
 }
 
 async function updateLot(id, auctioneerId, updateData) {

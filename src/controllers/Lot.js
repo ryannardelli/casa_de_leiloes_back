@@ -23,7 +23,13 @@ async function create(req, res, next) {
 async function findByAuctioneer(req, res, next) {
     try {
         const auctioneerId = req.user.id;
-        const lots = await lotService.getLotsByAuctioneer(auctioneerId);
+        const { status } = req.query;
+
+        const lots = await lotService.getLotsByAuctioneer(
+            auctioneerId,
+            status
+        );
+
         return res.status(200).json(lots);
     } catch (err) {
         next(err);

@@ -10,65 +10,99 @@ function createError(message, statusCode) {
     return error;
 }
 
-async function closeLot(lotId, auctioneerId) {
-    return awardRepository.transaction(async (transaction) => {
-        const lot = await awardRepository.findLotById(
-            lotId,
-            transaction,
-            true
-        );
+async function closeLot(lotId) {
+  return awardRepository.transaction(async (transaction) => {
+    const lot = await awardRepository.findLotById(
+      lotId,
+      transaction,
+      true
+    );
 
-        if (!lot) {
-            throw createError("Lote não encontrado.", 404);
-        }
+    if (!lot) {
+      throw new AwardNotFoundError();
+    }
 
-        if (Number(lot.auctioneerId) !== Number(auctioneerId)) {
-            throw createError(
-                "Você não tem permissão para encerrar este lote.",
-                403
-            );
-        }
+    if (lot.status === "CLOSED") {
+      return lot;
+    }
 
-        // Uma chamada repetida não deve alterar o resultado já registrado.
-        if (lot.status === "CLOSED") {
-            return lot;
-        }
+    if (lot.status !== "LIVE") {
+      throw new LotNotClosableError();
+    }
 
-        if (lot.status !== "LIVE") {
-            throw new LotNotClosableError(
-                "Somente lotes em andamento podem ser encerrados."
-            );
-        }
+    if (new Date(lot.endAt) > new Date()) {
+      throw new LotNotFinishedError();
+    }
 
-        const now = new Date();
-        const endAt = new Date(lot.endAt);
+    const latestBid = await awardRepository.findLatestBid(
+      lotId,
+      transaction
+    );
 
-        if (now < endAt) {
-            throw new LotNotFinishedError();
-        }
+    lot.winnerId = latestBid ? latestBid.bidderId : null;
+    lot.finalPrice = latestBid ? latestBid.amount : null;
+    lot.status = "CLOSED";
 
-        const latestBid = await awardRepository.findLatestBid(
-            lot.id,
-            transaction
-        );
+    await awardRepository.saveLot(lot, transaction);
 
-        // Sem lances, o lote é encerrado sem vencedor.
-        lot.winnerId = latestBid
-            ? latestBid.bidderId
-            : null;
-
-        lot.finalPrice = latestBid
-            ? latestBid.amount
-            : null;
-
-        lot.settledAt = now;
-        lot.status = "CLOSED";
-
-        await awardRepository.saveLot(lot, transaction);
-
-        return lot;
-    });
+    return lot;
+  });
 }
+
+// async function closeLot(lotId, auctioneerId) {
+//     return awardRepository.transaction(async (transaction) => {
+//         const lot = await awardRepository.findLotById(
+//             lotId,
+//             transaction,
+//             true
+//         );
+
+//         if (!lot) {
+//             throw new LotNotFoundError();
+//         }
+
+//         if (Number(lot.auctioneerId) !== Number(auctioneerId)) {
+//             throw new LotPermissionError();
+//         }
+
+//         if (lot.status === "CLOSED") {
+//             return lot;
+//         }
+
+//         if (lot.status !== "LIVE") {
+//             throw new LotNotClosableError(
+//                 "Somente lotes em andamento podem ser encerrados."
+//             );
+//         }
+
+//         const now = new Date();
+//         const endAt = new Date(lot.endAt);
+
+//         if (now < endAt) {
+//             throw new LotNotFinishedError();
+//         }
+
+//         const latestBid = await awardRepository.findLatestBid(
+//             lot.id,
+//             transaction
+//         );
+
+//         lot.winnerId = latestBid
+//             ? latestBid.bidderId
+//             : null;
+
+//         lot.finalPrice = latestBid
+//             ? latestBid.amount
+//             : null;
+
+//         lot.settledAt = now;
+//         lot.status = "CLOSED";
+
+//         await awardRepository.saveLot(lot, transaction);
+
+//         return lot;
+//     });
+// }
 
 async function getMyAwards(winnerId) {
     return awardRepository.findAwardsByWinnerId(winnerId);
