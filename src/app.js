@@ -9,6 +9,7 @@ const auctioneerLotsRoutes = require("./routes/auctioneerLotsRoutes");
 const walletRoutes = require("./routes/walletRoutes");
 const bidRoutes = require("./routes/bidRoutes");
 const awardRoutes = require("./routes/awardRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const publicCollectionRoutes = require("./routes/publicCollectionRoutes");
 const publicLotsRoutes = require("./routes/publicLotsRoutes");
@@ -32,6 +33,7 @@ app.use("/wallet", walletRoutes);
 app.use("/auctioneer", auctioneerLotsRoutes);
 app.use("/bids", bidRoutes);
 app.use("/awards", awardRoutes);
+app.use("/dashboard", dashboardRoutes);
 app.use("/public", publicCollectionRoutes);
 app.use("/public-lots", publicLotsRoutes );
 

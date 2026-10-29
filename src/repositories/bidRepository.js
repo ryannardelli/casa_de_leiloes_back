@@ -69,14 +69,55 @@ module.exports = {
                 ["createdAt", "DESC"],
                 ["id", "DESC"],
             ],
-        }),
+    }),
 
     findWalletByBidderId: (bidderId, transaction) =>
         Wallet.findOne({
             where: { userId: bidderId },
             transaction,
             lock: transaction.LOCK.UPDATE,
+    }),
+
+    countByBidder: (bidderId) =>
+    Bid.count({
+        where: { bidderId },
+    }),
+
+    countOngoingAuctionsByBidder: (bidderId) =>
+        Lot.count({
+            include: [
+                {
+                    model: Bid,
+                    as: "bids",
+                    where: { bidderId },
+                    attributes: [],
+                },
+            ],
+            where: {
+                status: "LIVE",
+            },
+            distinct: true,
+            col: "id",
         }),
+
+        countWonLotsByBidder: (bidderId) =>
+            Lot.count({
+                where: {
+                    winnerId: bidderId,
+                    status: "CLOSED",
+                },
+            }),
+
+        sumWonLotsByBidder: async (bidderId) => {
+            const result = await Lot.sum("finalPrice", {
+                where: {
+                    winnerId: bidderId,
+                    status: "CLOSED",
+                },
+            });
+
+            return result || 0;
+        },
 
     createBid: (data, transaction) =>
         Bid.create(data, { transaction }),
