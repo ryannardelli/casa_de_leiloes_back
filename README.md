@@ -85,9 +85,17 @@ Responsável por criar e popular os dados iniciais da aplicação, como o admini
 
 Responsável por executar tarefas automatizadas e rotinas em segundo plano no back-end
 
+### Configs
+
+Contém os arquivos de configuração da aplicação, como a conexão com o banco de dados e outras definições necessárias para o funcionamento dos serviços do back-end.
+
 ### Exceptions
 
 Centralizam erros personalizados e auxiliam no tratamento consistente de exceções ao longo da API.
+
+### Routes
+
+Define as rotas da API, direcionando as requisições HTTP para os respectivos controllers e organizando os endpoints disponíveis na aplicação.
 
 ## Principais Funcionalidades
 
