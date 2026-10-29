@@ -17,4 +17,28 @@ async function getBidderStats(userId) {
     };
 }
 
-module.exports = { getBidderStats };
+async function getAuctioneerStats(auctioneerId) {
+    if (!auctioneerId) throw new UserNotFoundError();
+
+    const activeLots =
+        await bidRepository.countActiveLotsByAuctioneer(auctioneerId);
+
+    const totalBids =
+        await bidRepository.countBidsByAuctioneer(auctioneerId);
+
+    const closedAuctions =
+        await bidRepository.countClosedAuctionsByAuctioneer(auctioneerId);
+
+    const totalAmountRaised =
+        await bidRepository.sumAmountRaisedByAuctioneer(auctioneerId);
+
+    return {
+        activeLots,
+        totalBids,
+        closedAuctions,
+        totalAmountRaised: totalAmountRaised || 0,
+    };
+}
+
+
+module.exports = { getBidderStats, getAuctioneerStats };

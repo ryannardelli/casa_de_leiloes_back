@@ -100,24 +100,24 @@ module.exports = {
             col: "id",
         }),
 
-        countWonLotsByBidder: (bidderId) =>
-            Lot.count({
-                where: {
-                    winnerId: bidderId,
-                    status: "CLOSED",
-                },
-            }),
+    countWonLotsByBidder: (bidderId) =>
+        Lot.count({
+            where: {
+                winnerId: bidderId,
+                status: "CLOSED",
+            },
+        }),
 
-        sumWonLotsByBidder: async (bidderId) => {
-            const result = await Lot.sum("finalPrice", {
-                where: {
-                    winnerId: bidderId,
-                    status: "CLOSED",
-                },
-            });
+    sumWonLotsByBidder: async (bidderId) => {
+        const result = await Lot.sum("finalPrice", {
+            where: {
+                winnerId: bidderId,
+                status: "CLOSED",
+            },
+        });
 
-            return result || 0;
-        },
+        return result || 0;
+    },
 
     createBid: (data, transaction) =>
         Bid.create(data, { transaction }),
@@ -130,4 +130,47 @@ module.exports = {
 
     saveLot: (lot, transaction) =>
         lot.save({ transaction }),
+
+    countActiveLotsByAuctioneer: (auctioneerId) =>
+        Lot.count({
+            where: {
+                auctioneerId,
+                status: {
+                    [require("sequelize").Op.in]: ["SCHEDULED", "LIVE"],
+                },
+            },
+        }),
+
+    countBidsByAuctioneer: (auctioneerId) =>
+        Bid.count({
+            include: [
+                {
+                    model: Lot,
+                    as: "lot",
+                    where: { auctioneerId },
+                    attributes: [],
+                },
+            ],
+            distinct: true,
+            col: "id",
+        }),
+
+    countClosedAuctionsByAuctioneer: (auctioneerId) =>
+        Lot.count({
+            where: {
+                auctioneerId,
+                status: "CLOSED",
+            },
+        }),
+
+    sumAmountRaisedByAuctioneer: (auctioneerId) =>
+        Lot.sum("finalPrice", {
+            where: {
+                auctioneerId,
+                status: "CLOSED",
+                winnerId: {
+                    [require("sequelize").Op.not]: null,
+                },
+            },
+        }),
 };

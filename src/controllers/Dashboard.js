@@ -1,4 +1,5 @@
 const { toBidderStatsDto } = require("../dtos/dashboard/toBidderStatsDto");
+const { toAuctioneerStatsDto } = require("../dtos/dashboard/toAuctioneerStatsDto");
 const dashboardService = require("../services/dashboardService");
 
 async function getBidderStats(req, res, next) {
@@ -14,4 +15,15 @@ async function getBidderStats(req, res, next) {
     }
 }
 
-module.exports = { getBidderStats };
+async function getAuctioneerStats(req, res, next) {
+    try {
+        const auctioneerId = req.user.id;
+        const stats = await dashboardService.getAuctioneerStats(auctioneerId);
+
+        return res.status(200).json(toAuctioneerStatsDto(stats));
+    } catch (err) {
+        next(err);
+    }
+}
+
+module.exports = { getBidderStats, getAuctioneerStats };

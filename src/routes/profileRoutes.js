@@ -65,7 +65,7 @@ router.get(
 router.post(
   "/",
   checkToken,
-  authorize(["admin"]),
+  authorize(["Administrador"]),
   profileController.create
 );
 
@@ -115,7 +115,7 @@ router.post(
 router.put(
   "/:id",
   checkToken,
-  authorize(["admin"]),
+  authorize(["Administrador"]),
   profileController.update
 );
 
@@ -176,7 +176,7 @@ router.get(
 router.delete(
   "/:id",
   checkToken,
-  authorize(["admin"]),
+  authorize(["Administrador"]),
   profileController.remove
 );
 
@@ -225,7 +225,7 @@ router.delete(
 router.patch(
   "/associateMenu/:id",
   checkToken,
-  authorize(["admin"]),
+  authorize(["Administrador"]),
   profileController.associateMenuToProfile
 );
 
