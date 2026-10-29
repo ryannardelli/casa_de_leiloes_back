@@ -1,4 +1,4 @@
-# Casa de Leilões Arremata — Back-End
+# Casa de Leilões Arremata - Back-End
 
 ## Bem-vindo à documentação do back-end da Casa de Leilões Arremata.
 
