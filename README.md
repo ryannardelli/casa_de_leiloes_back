@@ -316,3 +316,15 @@ Esta seção documenta eventuais limitações e comportamentos inesperados ident
 Este projeto foi desenvolvido como parte do teste técnico Elite Dev na Verzel, com o objetivo de construir o back-end para uma plataforma de leilões online, contemplando gerenciamento de lotes, processamento de lances em tempo real, controle de carteira, autenticação e auditoria dos lances.
 
 A arquitetura do back-end busca favorecer a organização, a manutenção do código, a segurança dos acessos e a consistência das regras de negócio, utilizando tecnologias como Node.js, Express, PostgreSQL, Sequelize e Socket.IO.
+
+## Credenciais de Acesso para Avaliação
+
+A aplicação possui usuários previamente cadastrados para facilitar a avaliação das funcionalidades, permitindo percorrer os fluxos de leiloeiro e licitante sem a necessidade de realizar todos os cadastros manualmente.
+
+### Usuários de Teste
+
+| Perfil | E-mail | Senha |
+|---|---|---|
+| Leiloeiro | gabriel.oliveira.teste@example.com | gabriel@123 |
+| Licitante | lucas.martins.teste@example.com | lucas@123 |
+| Licitante | pedro.mendes.teste@example.com | pedro@123 |
