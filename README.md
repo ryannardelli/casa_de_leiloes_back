@@ -2,7 +2,7 @@
 
 ## Bem-vindo à documentação do back-end da Casa de Leilões Arremata.
 
-Este projeto consiste em uma API desenvolvida para dar suporte a uma plataforma de leilões online, oferecendo gerenciamento de lotes, processamento de lances em tempo real, controle de acesso e mecanismos de verificação da integridade dos dados.
+Este repositório consiste em um back-ed desenvolvido para dar suporte a plataforma de leilões online, oferecendo gerenciamento de lotes, processamento de lances em tempo real, controle de acesso, mecanismos de verificação da integridade dos dados e muito mais.
 
 ## Visão Geral
 
