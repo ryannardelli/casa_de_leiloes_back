@@ -98,7 +98,6 @@ Centralizam erros personalizados e auxiliam no tratamento consistente de exceç�
 - **Lances em tempo real:** processamento de ofertas e transmissão de atualizações durante as disputas por meio do Socket.IO.
 - **Notificações de lances superados:** comunicação em tempo real para informar aos licitantes quando outro participante supera seus lances.
 - **Carteira virtual:** gerenciamento de depósitos simulados, saldos disponíveis e valores comprometidos em lances ativos.
-- **Liquidação de leilões:** processamento do encerramento das disputas e de seus respectivos resultados.
 - **Antissniping:** extensão do prazo do leilão quando as condições configuradas são atendidas.
 - **Auditoria e integridade dos lances:** utilização de hashes SHA-256 encadeados para auxiliar na identificação de alterações no histórico.
 - **Checkpoints de auditoria:** modelo `AuditCheckpoint` destinado a registrar referências de pontos específicos da cadeia de hashes para verificações posteriores.
