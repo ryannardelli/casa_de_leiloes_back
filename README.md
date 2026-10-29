@@ -302,3 +302,9 @@ Esta seção documenta eventuais limitações e comportamentos inesperados ident
 - **Auditoria dos lances:** a integridade da cadeia de hashes depende da correta geração e validação dos hashes. A existência de hashes e checkpoints, isoladamente, não garante que alterações nos dados sejam detectadas automaticamente.
 - **Inicialização após inatividade:** o back-end está hospedado no Render, no plano gratuito, que pode suspender o serviço após um período sem requisições, aumentando o tempo de carregamento inicial da API e do Swagger. Para tentar minimizar esse efeito, foi configurado o UptimeRobot para enviar requisições a cada 5 minutos, embora isso não garanta que o serviço permaneça ativo continuamente.
 - **Criação de lances:** devido ao tempo limitado de desenvolvimento que tive e a ausência de uma grande volume de testes, podem existir inconsistências pontuais nas regras de negócio relacionadas à criação e validação de lances entre outras incosistências visuais e funcioanis da aplicação.
+
+## Considerações Finais
+
+Este projeto foi desenvolvido como parte do teste técnico Elite Dev na Verzel, com o objetivo de construir uma API para uma plataforma de leilões online, contemplando gerenciamento de lotes, processamento de lances em tempo real, controle de carteira, autenticação e auditoria dos lances.
+
+A arquitetura do back-end busca favorecer a organização, a manutenção do código, a segurança dos acessos e a consistência das regras de negócio, utilizando tecnologias como Node.js, Express, PostgreSQL, Sequelize e Socket.IO.
