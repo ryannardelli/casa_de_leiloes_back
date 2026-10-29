@@ -289,5 +289,5 @@ Se todos os serviços forem iniciados corretamente, o back-end estará disponív
 - **API:** [http://localhost:3000](http://localhost:3000)
 - **Documentação Swagger:** [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-A documentação Swagger permite visualizar os endpoints disponíveis na API, consultar os parâmetros das requisições e testar as operações disponibilizadas pelo back-end.
+A documentação Swagger permite visualizar os endpoints disponíveis n back-end, consultar os parâmetros das requisições e testar as operações disponibilizadas pelo back-end.
 
