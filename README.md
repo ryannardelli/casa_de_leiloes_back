@@ -293,3 +293,12 @@ Se todos os serviços forem iniciados corretamente, o back-end estará disponív
 
 A documentação Swagger permite visualizar os endpoints disponíveis n back-end, consultar os parâmetros das requisições e testar as operações disponibilizadas pelo back-end.
 
+## Limitações e Comportamentos Identificados
+
+Esta seção documenta eventuais limitações e comportamentos inesperados identificados durante o desenvolvimento do back-end.
+
+- **Lotes e agendamento:** o status dos lotes é atualizado por tarefas agendadas com `node-cron`. O comportamento depende das datas configuradas e da execução correta dessas rotinas.
+- **Comunicação em tempo real:** as atualizações de lances e as notificações dependem da conexão ativa com o Socket.IO.
+- **Auditoria dos lances:** a integridade da cadeia de hashes depende da correta geração e validação dos hashes. A existência de hashes e checkpoints, isoladamente, não garante que alterações nos dados sejam detectadas automaticamente.
+- **Inicialização após inatividade:** o back-end está hospedado no Render, no plano gratuito, que pode suspender o serviço após um período sem requisições, aumentando o tempo de carregamento inicial da API e do Swagger. Para tentar minimizar esse efeito, foi configurado o UptimeRobot para enviar requisições a cada 5 minutos, embora isso não garanta que o serviço permaneça ativo continuamente.
+- **Criação de lances:** devido ao tempo limitado de desenvolvimento que tive e a ausência de uma grande volume de testes, podem existir inconsistências pontuais nas regras de negócio relacionadas à criação e validação de lances entre outras incosistências visuais e funcioanis da aplicação.
