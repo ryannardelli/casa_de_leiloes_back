@@ -86,8 +86,9 @@ async function createBid(lotId, bidderId, amount) {
             : Number(lot.startingPrice);
 
         if (bidAmount < minimumBid) {
-            throw new MinimumBidNotMetError();
+            throw new MinimumBidNotMetError(minimumBid);
         }
+
 
         const bidderWallet = await bidRepository.findWalletByBidderId(
             bidderId,
