@@ -45,9 +45,9 @@ src/
 ├── models/         # Modelos e relacionamentos do banco de dados
 ├── repositories/   # Acesso e persistência dos dados
 ├── routes/         # Definição das rotas da API
-├── seeds/          # Scripts para carga inicial e dados de teste
+├── seeds/          # Scripts para criação de dados iniciais
 ├── services/       # Regras de negócio e operações da aplicação
-├── works/          # Rotinas e funções auxiliares
+├── works/          # Tarefas automatizadas e rotinas em segundo plano
 ├── app.ts          # Configuração principal da aplicação
 └── server.ts       # Inicialização do servidor
 ```
@@ -78,9 +78,12 @@ Tratam responsabilidades compartilhadas, como autenticação, autorização, val
 
 Definem estruturas de dados utilizadas para transferir informações entre as camadas da aplicação, contribuindo para a padronização das entradas e saídas.
 
-### Utils
+### Seeds
+Responsável por criar e popular os dados iniciais da aplicação, como o administrador padrão, menus para perfils e mais.
 
-Disponibilizam funções utilitárias reutilizáveis que auxiliam diferentes partes da aplicação.
+### Works
+
+Responsável por executar tarefas automatizadas e rotinas em segundo plano no back-end
 
 ### Exceptions
 
